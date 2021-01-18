@@ -16,16 +16,17 @@ _global_script_class_icons={
 [application]
 
 config/name="MastersOfTheArena"
-run/main_scene="res://Scenes/Arena.tscn"
+run/main_scene="res://Scenes/Arena3D.tscn"
 config/icon="res://icon.png"
 
 [display]
 
-window/size/width=1920
-window/size/height=1080
+window/size/width=1280
+window/size/height=720
 window/size/resizable=false
 window/size/borderless=true
 
 [rendering]
 
+quality/filters/msaa=2
 environment/default_environment="res://default_env.tres"
