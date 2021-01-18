@@ -117,8 +117,8 @@ func mouse_out_tile(tile_instance):
 	target_tile = tile_instance
 
 
-func _process(_delta: float) -> void:
-	pass
+#func _process(_delta: float) -> void:
+#	pass
 
 
 func _input(event):
