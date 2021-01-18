@@ -5,6 +5,7 @@ var rng
 var tile
 var obstacle
 var pathfinder
+var los
 var display_mode
 var map
 var tile_instances
@@ -19,14 +20,21 @@ func _ready() -> void:
 	
 	map_size = 35
 	tile_instances = []
+	display_mode = 0
 	
 	tile = load("res://Scenes/Tile.tscn")
 	obstacle = load("res://Scenes/Obstacle.tscn")
-	
+
 	pathfinder = get_node("Pathfinder")
+	los = get_node("LoS")
 	camera = get_node("Camera")
 
 	generate_map()
+
+
+func reset_tools_state():
+	pathfinder.reset_state()
+	los.reset_state()
 
 
 func generate_map():
@@ -108,13 +116,31 @@ func generate_map():
 					instance.connect("tile_left", self, "mouse_out_tile")
 	
 	pathfinder.set_tiles(tile_instances)
+	los.set_tiles(tile_instances)
 
 
 func mouse_in_tile(tile_instance):
 	target_tile = tile_instance
+	display_map()
 	
 func mouse_out_tile(tile_instance):
 	target_tile = tile_instance
+
+
+func display_map():
+	if display_mode == 0:
+		pathfinder.compute_path(target_tile.id)
+		pathfinder.display_path()
+		
+	if display_mode == 1:
+		pathfinder.set_start(target_tile)
+		pathfinder.get_all_path(15)
+		pathfinder.display_all_path()
+		
+	if display_mode == 2:
+		los.set_start(target_tile)
+		los.get_all_los(40)
+		los.display_all_los()
 
 
 #func _process(_delta: float) -> void:
@@ -124,27 +150,30 @@ func mouse_out_tile(tile_instance):
 func _input(event):
 	if event is InputEventMouseButton:
 		if target_tile:
-			pathfinder.set_start(target_tile.id)
-			pathfinder.compute_path(target_tile.id)
-			pathfinder.display_path()
+			pathfinder.set_start(target_tile)
+			display_map()
 	
-	if event is InputEventMouseMotion:
-		if target_tile:
-			pathfinder.compute_path(target_tile.id)
-			pathfinder.display_path()
+#	if event is InputEventMouseMotion:
+#		if target_tile:
+#			pathfinder.compute_path(target_tile.id)
+#			pathfinder.display_path()
 	
 	if event is InputEventKey:
 		if event.pressed and event.scancode == KEY_ESCAPE:
 			get_tree().quit()
 			
-		if event.pressed and event.scancode == KEY_0:
-			display_mode = 0
-			print(display_mode)
 		if event.pressed and event.scancode == KEY_1:
-			display_mode = 1
+			display_mode = 0
+			reset_tools_state()
 			print(display_mode)
 		if event.pressed and event.scancode == KEY_2:
-			display_mode = 2
+			display_mode = 1
+			reset_tools_state()
 			print(display_mode)
 		if event.pressed and event.scancode == KEY_3:
+			display_mode = 2
+			reset_tools_state()
+			print(display_mode)
+		if event.pressed and event.scancode == KEY_4:
+			reset_tools_state()
 			generate_map()

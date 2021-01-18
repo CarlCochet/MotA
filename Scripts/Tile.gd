@@ -42,9 +42,7 @@ func change_color(new_color):
 
 
 func _tile_hovered():
-#	change_color(Color(0, 1, 0))
 	emit_signal("tile_hovered", self)
 
 func _tile_left():
-#	change_color(Color(1, 1, 1))
 	emit_signal("tile_left", self)

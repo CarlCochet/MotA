@@ -16,8 +16,3 @@ func _ready() -> void:
 func change_color(new_color):
 	material.albedo_color = new_color
 	get_node("Top").set_material(material)
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta: float) -> void:
-#	pass
