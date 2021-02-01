@@ -1,29 +1,81 @@
-extends Node
+extends Spatial
 
 
-var arena
 var start
 var tiles
+var map_size
+var pos_in_sight
+var previous_pos_in_sight
+var all_los
+var previous_all_los
+var los_color
 
 
 func _ready() -> void:
-	arena = get_parent()
-	start = Vector2(0, 0)
+	start = Vector2(1, 15)
 	tiles = []
+	pos_in_sight = []
+	previous_pos_in_sight = []
+	all_los = []
+	previous_all_los = []
+	los_color = Color(0, 0, 0.7)
 
 
-func get_all_los(los_range: int):
-	for i in range(los_range):
-		for k in range(los_range):
-			var a = 1
+func reset_state():
+	for pos in all_los:
+		tiles[pos.x][pos.y].reset_color()
+
+	start = Vector2(1, 15)
+	pos_in_sight = []
+	previous_pos_in_sight = []
+	all_los = []
+	previous_all_los = []
+
+func set_start(tile):
+	start = tile.pos
 
 
-func set_start(pos: Vector2):
-	if arena.map_offset.x < pos.x and pos.x < arena.map_bounds.x and arena.map_offset.y < pos.y and pos.y < arena.map_bounds.y:
-		start = Vector2(int((pos.x - arena.map_offset.x) / arena.grid_step), int((pos.y - arena.map_offset.y) / arena.grid_step))
+func set_tiles(new_tiles):
+	tiles = new_tiles
+	map_size = len(tiles)
 
 
-func compute_los(target: Vector2) -> bool:
+func display_all_los():
+	for pos in previous_all_los:
+		tiles[pos.x][pos.y].reset_color()
+	
+	for pos in all_los:
+		tiles[pos.x][pos.y].change_color(los_color)
+
+
+func display_los():
+	for pos in previous_pos_in_sight:
+		tiles[pos.x][pos.y].reset_color()
+	
+	for pos in pos_in_sight:
+		tiles[pos.x][pos.y].change_color(los_color)
+
+
+func get_all_los(max_range: int):
+	var pos
+	previous_all_los = all_los
+	all_los = []
+	
+	for x in range(-max_range, max_range):
+		for y in range(-max_range, max_range):
+			pos = Vector2(start.x + x, start.y + y)
+			
+			if pos.x >= 0 and pos.y >= 0 and pos.x < map_size and pos.y < map_size:
+				if abs(x) + abs(y) <= max_range:
+					var valid = compute_los(pos)
+					
+					if valid == true and len(pos_in_sight) > 0:
+						all_los.append(pos_in_sight[-1])
+
+
+func compute_los(target: Vector2):
+	pos_in_sight = []
+	
 	var d = Vector2(abs(start.x - target.x), abs(start.y - target.y))
 	var pos = start
 	var n = d.x + d.y
@@ -43,11 +95,13 @@ func compute_los(target: Vector2) -> bool:
 			pos.y += vector.y
 			error += d.x
 		
-		if pos.x >= 0 and pos.x < arena.map_size.x and pos.y >= 0 and pos.y < arena.map_size.y:
-			if arena.map[pos.x][pos.y] == 1:
-				break
-			elif arena.map[pos.x][pos.y] > 1:
-				tiles.append(pos)
+		if pos.x >= 0 and pos.x < map_size and pos.y >= 0 and pos.y < map_size:
+			if tiles[pos.x][pos.y]:
+				if tiles[pos.x][pos.y].type == "Obstacle":
+					break
+				elif tiles[pos.x][pos.y].type == "Tile":
+					pos_in_sight.append(pos)
 		n -= 1
 	
+#	print(pos_in_sight)
 	return pos.x == target.x and pos.y == target.y

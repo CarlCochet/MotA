@@ -16,7 +16,7 @@ _global_script_class_icons={
 [application]
 
 config/name="MastersOfTheArena"
-run/main_scene="res://Scenes/Arena3D.tscn"
+run/main_scene="res://Scenes/Gameplay/Character.tscn"
 config/icon="res://icon.png"
 
 [display]
@@ -24,7 +24,6 @@ config/icon="res://icon.png"
 window/size/width=1600
 window/size/height=900
 window/size/resizable=false
-window/size/borderless=true
 
 [rendering]
 

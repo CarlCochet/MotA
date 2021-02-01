@@ -1,31 +1,95 @@
-extends Node2D
+extends Spatial
 
 
-var arena
 var astar
 var start
-var start_id
+var previous_path
 var path
+var tiles
+var map_size
+var all_possible_moves
+var all_previous_possible_moves
+var path_color
 
 
 func _ready() -> void:
-	arena = get_parent()
 	astar = AStar2D.new()
-	start = Vector2(0, 0)
-	start_id = 0
+	previous_path = []
 	path = []
+	all_possible_moves = []
+	all_previous_possible_moves = []
+	path_color = Color(0, 0.7, 0)
 
 
-func set_start(pos: Vector2):
-	if arena.map_offset.x < pos.x and pos.x < arena.map_bounds.x and arena.map_offset.y < pos.y and pos.y < arena.map_bounds.y:
-		start = Vector2(int((pos.x - arena.map_offset.x) / arena.grid_step), int((pos.y - arena.map_offset.y) / arena.grid_step))
-		start_id = start.x * arena.map_size.y + start.y
-
-
-func compute_path(target: Vector2):
-	if arena.map_offset.x < target.x and target.x < arena.map_bounds.x and arena.map_offset.y < target.y and target.y < arena.map_bounds.y:
-		var target_pos = Vector2(int((target.x - arena.map_offset.x) / arena.grid_step), int((target.y - arena.map_offset.y) / arena.grid_step))
-		var target_id = target_pos.x * arena.map_size.y + target_pos.y
+func reset_state():
+	for pos in all_possible_moves:
+		tiles[pos.x][pos.y].reset_color()
 		
-		if astar.has_point(target_id):
-			path = astar.get_point_path(start_id, target_id)
+	for pos in path:
+		tiles[pos.x][pos.y].reset_color()
+	
+	previous_path = []
+	path = []
+	all_possible_moves = []
+	all_previous_possible_moves = []
+
+
+func get_id_from_pos(pos: Vector2) -> int:
+	var id
+	if tiles:
+		id = pos.x * map_size + pos.y
+	return id
+
+
+func set_start(tile):
+	start = tile
+
+func set_tiles(new_tiles):
+	tiles = new_tiles
+	map_size = len(tiles)
+
+
+func display_all_path():
+	for pos in all_previous_possible_moves:
+		tiles[pos.x][pos.y].reset_color()
+	
+	for pos in all_possible_moves:
+		tiles[pos.x][pos.y].change_color(path_color)
+
+
+func display_path():
+	for pos in previous_path:
+		tiles[pos.x][pos.y].reset_color()
+
+	for pos in path:
+		tiles[pos.x][pos.y].change_color(path_color)
+
+
+func get_all_path(max_move: int):
+	var pos
+	var id
+	var temp_path
+	
+	all_previous_possible_moves = all_possible_moves
+	all_possible_moves = []
+	
+	for x in range(-max_move, max_move + 1):
+		for y in range(-max_move, max_move + 1):
+			pos = Vector2(start.pos.x + x, start.pos.y + y)
+			
+			if pos.x >= 0 and pos.y >= 0 and pos.x < map_size and pos.y < map_size:
+				if abs(x) + abs(y) <= max_move:
+					id = get_id_from_pos(pos)
+					if astar.has_point(id):
+						temp_path = astar.get_point_path(start.id, id)
+						
+						if len(temp_path) <= max_move + 1:
+							for point in temp_path:
+								if not (point in all_possible_moves):
+									all_possible_moves.append(point)
+
+
+func compute_path(id: int):
+	if start:
+		previous_path = path
+		path = astar.get_point_path(start.id, id)

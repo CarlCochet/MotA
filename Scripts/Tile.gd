@@ -21,6 +21,8 @@ func _ready() -> void:
 	material = top.get_material().duplicate()
 	top.set_material(material)
 	
+	color = material.albedo_color
+	
 	collision_object = StaticBody.new()
 	collision_shape = CollisionShape.new()
 	var shape = BoxShape.new()
@@ -40,6 +42,9 @@ func change_color(new_color):
 	material.albedo_color = new_color
 	top.set_material(material)
 
+func reset_color():
+	material.albedo_color = color
+	top.set_material(material)
 
 func _tile_hovered():
 	emit_signal("tile_hovered", self)
