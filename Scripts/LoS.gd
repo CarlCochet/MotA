@@ -103,5 +103,4 @@ func compute_los(target: Vector2):
 					pos_in_sight.append(pos)
 		n -= 1
 	
-#	print(pos_in_sight)
 	return pos.x == target.x and pos.y == target.y

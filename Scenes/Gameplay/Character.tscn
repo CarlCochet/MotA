@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://Scripts/Character.gd" type="Script" id=1]
+[ext_resource path="res://Scripts/Character.cs" type="Script" id=1]
+[ext_resource path="res://Scripts/Outfit.cs" type="Script" id=2]
 
 [node name="Character" type="Spatial"]
 script = ExtResource( 1 )
@@ -9,3 +10,4 @@ script = ExtResource( 1 )
 transform = Transform( 1, 0, 0, 0, 0.812308, 0.583229, 0, -0.583229, 0.812308, 0, 3.87774, 5.85756 )
 
 [node name="Outfit" type="Spatial" parent="."]
+script = ExtResource( 2 )

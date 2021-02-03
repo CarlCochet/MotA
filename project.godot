@@ -16,14 +16,15 @@ _global_script_class_icons={
 [application]
 
 config/name="MastersOfTheArena"
-run/main_scene="res://Scenes/Gameplay/Character.tscn"
+run/main_scene="res://Scenes/Map/Arena.tscn"
 config/icon="res://icon.png"
 
 [display]
 
-window/size/width=1600
-window/size/height=900
+window/size/width=1920
+window/size/height=1080
 window/size/resizable=false
+window/size/borderless=true
 
 [rendering]
 
