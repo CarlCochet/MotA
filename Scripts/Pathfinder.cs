@@ -22,7 +22,7 @@ public class Pathfinder : Spatial
         this.path = null;
         this.all_possible_moves = new List<Vector2>();
         this.all_previous_possible_moves = new List<Vector2>();
-        this.path_color = new Color(0, 0.7f, 0);
+        this.path_color = new Color(0.341f, 0.6f, 0.086f);
     }
 
     public void reset_state()

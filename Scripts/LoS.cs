@@ -21,7 +21,7 @@ public class LoS : Spatial
         this.previous_pos_in_sight = new List<Vector2>();
         this.all_los = new List<Vector2>();
         this.previous_all_los = new List<Vector2>();
-        this.los_color = new Color(0, 0, 0.7f);
+        this.los_color = new Color(0.184f, 0.208f, 0.71f);
     }
 
     public void reset_state()
